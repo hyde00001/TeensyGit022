@@ -25,8 +25,41 @@ void mySetFlightAndPowerOnRestart()
     myThreshold ++;
   }
   while (!myGPSFlightModeYesNo || !myGPSMaxPowerModeYesNo);
+  
+  //debug
+  boolean debug;
+  uint8_t GPSHotStart[] = {0xB5, 0x62, 0x06, 0x04, 0x04, 0x00, 0x00, 0x00, 0x01, 0x00, 0x0F, 0x66                   };
+  
+  debug = myGPSSendAndConfirm (GPSHotStart, "Test", true);
+  
 }
 
+boolean myGPSSendAndConfirm (uint8_t myGPSSend[], String myGPSSendMessage, boolean myGPSGetConfirmation)
+{
+  unsigned long myTimer;
+  boolean gps_set_sucess = false;
+  
+  if (myDebugShowGPSStatus)
+  {
+    Serial.print (myGPSSendMessage);
+  }
+  
+  Serial1.begin(9600);
+  
+  myTimer = millis();
+  while(!gps_set_sucess && (millis() - myTimer < 2000))
+  {
+    sendUBX(myGPSSend, sizeof(myGPSSend)/sizeof(uint8_t));
+    if (myGPSGetConfirmation)
+    {
+      gps_set_sucess=getUBX_ACK(myGPSSend);
+    }
+  }
+  
+  Serial1.end();
+  
+  return gps_set_sucess;
+}
 
 void myGPSHotStart()
 {
