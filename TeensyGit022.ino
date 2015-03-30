@@ -4,6 +4,7 @@
 Teensy3.1 Based HAB Tracker
 
 v022 - Move myGPSAirborne1Mode call to all GPS startups
+First Edit
 
 *** Hardware Configuration ***
 
